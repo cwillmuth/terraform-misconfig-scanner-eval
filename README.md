@@ -1,36 +1,35 @@
 # Terraform Misconfig Scanner Eval
 
-**Question:** How reliably do open-source scanners (Checkov, Trivy) catch seeded AWS misconfigurations in Terraform?
+**Question:** How reliably does Checkov catch seeded AWS misconfigurations in Terraform?
 
-I wrote Terraform for a small AWS environment with ~10 seeded misconfigurations, scanned it with Checkov and Trivy, fixed the findings, and re-scanned. Everything runs locally with no cloud account or spend.
+We wrote Terraform for a small AWS environment with 10 seeded misconfigurations
+(storage, IAM, networking) and 2 deliberately safe controls, scanned it with
+Checkov, fixed the findings, and re-scanned. Everything runs locally. Terraform
+is never applied.
+
+**Authors:** Campbell Willmuth, Kass Gifford
 
 ## Status
-Phase 1 of 4: seeding baseline (not started)
+Seeding baseline (in progress)
 
-## Method (short)
-TBD. See `docs/methodology.md`.
+## Method
+- `ground_truth.csv` is the answer key, committed before any scan.
+- A seed is **detected** if Checkov fails a check on that resource that matches
+  the flaw.
+- A **false positive** is a failed check on a control that is not a real problem.
+- Every miss and false positive gets a written cause in `report.md`.
 
 ## Reproduce
 ```bash
-python -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-make scan-vuln
-make scan-fixed
-make score
+checkov -d vulnerable/ --framework terraform -o json > results/checkov_vulnerable.json
+checkov -d fixed/ --framework terraform -o json > results/checkov_fixed.json
 ```
-No AWS account is needed. Terraform is never applied.
 
 ## Results
-TBD
+See [report.md](report.md).
 
 ## Limitations
-TBD
-
-## Repo layout
-- `ground_truth.csv`: answer key, committed before any scan
-- `vulnerable/`: Terraform with seeded misconfigurations and safe controls
-- `fixed/`: remediated Terraform
-- `results/`: raw scanner output only, never hand-edited
-- `scripts/score.py`: computes detection rate and false positives
-- `report/`: interpreted findings
-- `docs/`: methodology and decision log
+One scanner, one pinned version, one cloud, 10 seeds we chose ourselves. The
+detection rate describes this sample, not Checkov in general.
