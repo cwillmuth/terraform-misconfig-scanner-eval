@@ -1,0 +1,3 @@
+# After `pip install checkov`, replace this line with the pinned version:
+#   pip freeze | grep -i checkov > requirements.txt
+checkov
