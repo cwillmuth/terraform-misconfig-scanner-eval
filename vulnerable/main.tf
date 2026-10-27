@@ -4,8 +4,7 @@
 # =============================================================================
 #
 # STATUS
-#   Seeds 01-05 and both controls are written.
-#   Seeds 06-10 are TODO blocks (search this file for "TODO").
+#   Seeds 01-10 and both controls are written. No TODO blocks remain.
 #
 # PURPOSE
 #   This file is the "before" half of the experiment. It contains 10 planted
@@ -216,33 +215,66 @@ resource "aws_iam_policy" "seed05_wildcard" {
 # SEED-06 | iam | Policy attached directly to a user
 # Expected Checkov check: CKV_AWS_40
 #
-# TODO: write this seed.
-#   - Seed resource:  aws_iam_user_policy.seed06_user_inline
-#   - Needs a SUPPORTING resource first: an aws_iam_user (label seed06_user)
-#     for the policy to attach to. Mark it "SUPPORTING (not scored)".
-#   - The flaw is HOW the policy is attached (directly to a user, not to a
-#     group or role), so use the "user" argument.
-#   - One-flaw rule: keep the policy content NARROW (one specific action on
-#     one specific path, no "*" wildcards). Wildcards would also trip
-#     SEED-05's checks and blur the results.
-#   - Use jsonencode() for the policy, as SEED-05 does.
-#   - Comment it in the same style: what is wrong, why it matters, which
-#     check you expect.
+# What is wrong:   The permissions are attached straight to an individual IAM
+#                  user instead of to a group or a role. The flaw is HOW the
+#                  policy is attached, not what the policy says.
+# Why it matters:  Per-user policies are hard to audit and easy to forget.
+#                  When someone changes teams or leaves, their direct
+#                  permissions have to be hunted down one user at a time,
+#                  which leads to permission sprawl and orphaned access. Groups
+#                  and roles give one place to review and revoke access.
+# One-flaw rule:   The policy content is deliberately NARROW: one specific
+#                  action on one specific object path, no "*" wildcards. That
+#                  keeps it from tripping SEED-05's checks (CKV_AWS_62,
+#                  CKV_AWS_63, CKV_AWS_355) and blurring the results.
 # -----------------------------------------------------------------------------
+
+# SUPPORTING resource (not scored): the user the policy is attached to.
+resource "aws_iam_user" "seed06_user" {
+  name = "tmse-seed06-user" # fake user; no access keys or login profile are created
+}
+
+# THE SEED
+resource "aws_iam_user_policy" "seed06_user_inline" {
+  name = "tmse-seed06-user-inline"
+  user = aws_iam_user.seed06_user.name # <-- FLAW: attached to a user, not a group or role
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "s3:GetObject"                                         # one specific action
+        Resource = "arn:aws:s3:::tmse-seed06-example/reports/summary.txt" # one specific object, fake name
+      }
+    ]
+  })
+}
 
 
 # -----------------------------------------------------------------------------
 # SEED-07 | iam | Weak account password policy (minimum length 6)
 # Expected Checkov check: CKV_AWS_10
 #
-# TODO: write this seed.
-#   - Seed resource:  aws_iam_account_password_policy.seed07_weak
-#   - The flaw: minimum_password_length = 6 (the check wants 14 or more).
-#   - One-flaw rule: set every OTHER password requirement to a secure value
-#     (require lowercase, uppercase, numbers, symbols; a max password age of
-#     90 days; password reuse prevention of 24) so only the length check fails.
-#   - Comment it in the same style.
+# What is wrong:   The account password policy accepts passwords as short as 6
+#                  characters. The check wants a minimum length of 14 or more.
+# Why it matters:  Short passwords fall quickly to brute-force and credential
+#                  stuffing attacks. Benchmarks such as CIS AWS Foundations
+#                  call for a long minimum length for IAM console users.
+# One-flaw rule:   Every OTHER requirement is set to a secure value (lowercase,
+#                  uppercase, numbers, symbols, 90-day max age, reuse
+#                  prevention of 24) so only the length check fails.
 # -----------------------------------------------------------------------------
+resource "aws_iam_account_password_policy" "seed07_weak" {
+  minimum_password_length = 6 # <-- FLAW (CKV_AWS_10): should be 14 or more
+
+  require_lowercase_characters = true
+  require_uppercase_characters = true
+  require_numbers              = true
+  require_symbols              = true
+  max_password_age             = 90 # days until a password must be changed
+  password_reuse_prevention    = 24 # remember the last 24 passwords
+}
 
 
 # =============================================================================
@@ -253,42 +285,90 @@ resource "aws_iam_policy" "seed05_wildcard" {
 # SEED-08 | networking | SSH open to the whole internet
 # Expected Checkov check: CKV_AWS_24
 #
-# TODO: write this seed.
-#   - Seed resource:  aws_security_group.seed08_ssh_open
-#   - The flaw: one ingress rule allowing TCP port 22 (from_port and to_port
-#     both 22) from cidr_blocks = ["0.0.0.0/0"].
-#   - Give it a name and a description (both fake, "tmse-" prefix).
-#   - Comment it in the same style.
+# What is wrong:   One ingress rule allows TCP port 22 (SSH) from 0.0.0.0/0,
+#                  which means every IP address on the internet.
+# Why it matters:  Exposed SSH is probed by automated scanners within minutes
+#                  of going live. It invites brute-force logins and attacks on
+#                  any unpatched SSH daemon. Admin access should be limited to
+#                  a known range, a VPN, or a managed alternative such as
+#                  Session Manager.
+# One-flaw rule:   The rule has a description so CKV_AWS_23 (rule descriptions)
+#                  stays quiet. Checkov may still report unrelated findings,
+#                  such as the group not being attached to any resource.
 # -----------------------------------------------------------------------------
+resource "aws_security_group" "seed08_ssh_open" {
+  name        = "tmse-seed08-ssh-open"
+  description = "SEED-08: SSH open to the internet"
+
+  ingress {
+    description = "SSH from anywhere"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # <-- FLAW: the whole internet
+  }
+}
 
 
 # -----------------------------------------------------------------------------
 # SEED-09 | networking | ALL ports open to the whole internet
 # Expected Checkov check: CKV_AWS_277
 #
-# TODO: write this seed.
-#   - Seed resource:  aws_security_group.seed09_all_ports_open
-#   - The flaw: one ingress rule with protocol = "-1" (all protocols), ports
-#     0 to 0, from cidr_blocks = ["0.0.0.0/0"].
-#   - Other security-group checks may also fire on this resource. Those are
-#     unrelated findings; only CKV_AWS_277 counts as the detection.
-#   - Comment it in the same style.
+# What is wrong:   One ingress rule uses protocol "-1" (all protocols) with
+#                  ports 0 to 0, which AWS treats as every port, from
+#                  0.0.0.0/0 (every IP address on the internet).
+# Why it matters:  Every service listening on the instance is reachable by
+#                  anyone, including databases, admin panels, and debug
+#                  ports that were never meant to be public. It is the
+#                  networking equivalent of removing the firewall.
+# Scoring note:    Other security-group checks may also fire on this resource
+#                  (for example CKV_AWS_24, since "all ports" includes 22).
+#                  Those are unrelated findings. Only CKV_AWS_277 counts as
+#                  the detection.
 # -----------------------------------------------------------------------------
+resource "aws_security_group" "seed09_all_ports_open" {
+  name        = "tmse-seed09-all-ports-open"
+  description = "SEED-09: all ports open to the internet"
+
+  ingress {
+    description = "All traffic from anywhere"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"          # <-- FLAW: all protocols and all ports
+    cidr_blocks = ["0.0.0.0/0"] # <-- FLAW: the whole internet
+  }
+}
 
 
 # -----------------------------------------------------------------------------
 # SEED-10 | networking | RDS database publicly accessible
 # Expected Checkov check: CKV_AWS_17
 #
-# TODO: write this seed.
-#   - Seed resource:  aws_db_instance.seed10_public_db
-#   - Pattern: copy SEED-04 and flip the flaw. Change the identifier to
-#     something like "tmse-seed10-public-db".
-#   - The flaw: publicly_accessible = true
-#   - One-flaw rule: set storage_encrypted = true so CKV_AWS_16 does not fire
-#     on this resource (that check belongs to SEED-04).
-#   - Comment it in the same style.
+# What is wrong:   publicly_accessible = true gives the database a public IP
+#                  address and a DNS name that resolves to it, so it can be
+#                  reached from the internet (subject to security groups).
+# Why it matters:  Databases should sit on private networks and be reached
+#                  through an application tier or a bastion. A public endpoint
+#                  makes the database a direct target for credential guessing
+#                  and for exploits against the database engine.
+# One-flaw rule:   storage_encrypted is set to true so CKV_AWS_16 does not fire
+#                  on this resource (that check belongs to SEED-04).
 # -----------------------------------------------------------------------------
+resource "aws_db_instance" "seed10_public_db" {
+  identifier        = "tmse-seed10-public-db" # name of the DB in AWS
+  engine            = "mysql"                 # database software
+  instance_class    = "db.t3.micro"           # smallest, cheapest size (never deployed anyway)
+  allocated_storage = 20                      # disk size in GB
+
+  username                    = "admin" # master username (not a secret)
+  manage_master_user_password = true    # AWS generates the password and stores it in Secrets Manager.
+                                        # This avoids a hardcoded password so Checkov's secret
+                                        # detection does not add unrelated noise.
+
+  storage_encrypted   = true # kept SECURE here on purpose (SEED-04 breaks this one)
+  publicly_accessible = true # <-- FLAW: should be false
+  skip_final_snapshot = true # lets the resource be destroyed without a snapshot; irrelevant to the flaw
+}
 
 
 # =============================================================================
