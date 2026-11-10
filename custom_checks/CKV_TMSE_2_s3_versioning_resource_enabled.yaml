@@ -1,0 +1,18 @@
+# Custom Checkov policy for SEED-03.
+#
+# Why it exists: stock CKV_AWS_21 is defined on aws_s3_bucket and follows a
+# connection to the aws_s3_bucket_versioning resource, so the failure is
+# reported on the BUCKET. This policy evaluates the versioning resource
+# directly, so a "Suspended" (or "Disabled") status fails on
+# aws_s3_bucket_versioning.<label>.
+metadata:
+  id: "CKV_TMSE_2"
+  name: "Ensure the aws_s3_bucket_versioning resource has status Enabled"
+  category: "BACKUP_AND_RECOVERY"
+definition:
+  cond_type: "attribute"
+  resource_types:
+    - "aws_s3_bucket_versioning"
+  attribute: "versioning_configuration.status"
+  operator: "equals"
+  value: "Enabled"

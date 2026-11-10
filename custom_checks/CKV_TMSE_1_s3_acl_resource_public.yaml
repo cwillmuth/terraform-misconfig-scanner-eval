@@ -1,0 +1,21 @@
+# Custom Checkov policy for SEED-01.
+#
+# Why it exists: stock CKV_AWS_20 is defined on aws_s3_bucket and follows a
+# connection to the aws_s3_bucket_acl resource, so the failure is reported on
+# the BUCKET and never on the aws_s3_bucket_acl resource that holds the flaw.
+# This policy evaluates the ACL resource directly, so the finding lands on
+# aws_s3_bucket_acl.<label> (the resource named in ground_truth.csv).
+metadata:
+  id: "CKV_TMSE_1"
+  name: "Ensure the aws_s3_bucket_acl resource does not grant public or authenticated-user access"
+  category: "GENERAL_SECURITY"
+definition:
+  cond_type: "attribute"
+  resource_types:
+    - "aws_s3_bucket_acl"
+  attribute: "acl"
+  operator: "not_within"
+  value:
+    - "public-read"
+    - "public-read-write"
+    - "authenticated-read"
