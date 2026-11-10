@@ -1,0 +1,435 @@
+{
+  "summary": {
+    "checkov_version_before": "3.3.30",
+    "seeds_total": 10,
+    "detected_exact": 8,
+    "detected_any": 10,
+    "detection_rate_exact": 0.8,
+    "detection_rate_any": 1.0,
+    "by_category": {
+      "storage": {
+        "seeds": 4,
+        "exact": 2,
+        "any": 4
+      },
+      "iam": {
+        "seeds": 3,
+        "exact": 3,
+        "any": 3
+      },
+      "networking": {
+        "seeds": 3,
+        "exact": 3,
+        "any": 3
+      }
+    },
+    "total_failed_before": 67,
+    "total_failed_after": 42,
+    "total_passed_before": 65,
+    "total_passed_after": 90,
+    "expected_check_failures_before": 15,
+    "expected_check_failures_after": 0,
+    "seeds_still_flagged_after": 0,
+    "seeds_fixed": 10,
+    "control_findings_before": 6,
+    "control_findings_after": 6,
+    "finding_classes_before": {
+      "expected": 15,
+      "independent_best_practice": 30,
+      "corroborating": 10,
+      "unattached_security_group": 2,
+      "supporting_bucket_gap": 4,
+      "control": 6
+    },
+    "parsing_errors_before": 0,
+    "parsing_errors_after": 0
+  },
+  "rows": [
+    {
+      "id": "SEED-01",
+      "resource": "aws_s3_bucket_acl.seed01_public_acl",
+      "category": "storage",
+      "flaw": "S3 ACL grants public read",
+      "expected_checks": [
+        "CKV_AWS_20"
+      ],
+      "exact_hits": [],
+      "linked_hits": {
+        "aws_s3_bucket.seed01_public_acl": [
+          "CKV_AWS_20"
+        ]
+      },
+      "detected_exact": false,
+      "detected_any": true,
+      "expected_fired": "1/1",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV2_AWS_6",
+        "CKV2_AWS_61",
+        "CKV2_AWS_62",
+        "CKV_AWS_144",
+        "CKV_AWS_145",
+        "CKV_AWS_18",
+        "CKV_AWS_21"
+      ],
+      "unrelated_findings_after": [
+        "CKV2_AWS_6",
+        "CKV2_AWS_61",
+        "CKV2_AWS_62",
+        "CKV_AWS_144",
+        "CKV_AWS_145",
+        "CKV_AWS_18",
+        "CKV_AWS_21"
+      ]
+    },
+    {
+      "id": "SEED-02",
+      "resource": "aws_s3_bucket_public_access_block.seed02_no_pab",
+      "category": "storage",
+      "flaw": "Public access block disabled",
+      "expected_checks": [
+        "CKV_AWS_53",
+        "CKV_AWS_54",
+        "CKV_AWS_55",
+        "CKV_AWS_56"
+      ],
+      "exact_hits": [
+        "CKV_AWS_53",
+        "CKV_AWS_54",
+        "CKV_AWS_55",
+        "CKV_AWS_56"
+      ],
+      "linked_hits": {},
+      "detected_exact": true,
+      "detected_any": true,
+      "expected_fired": "4/4",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV2_AWS_6",
+        "CKV2_AWS_61",
+        "CKV2_AWS_62",
+        "CKV_AWS_144",
+        "CKV_AWS_145",
+        "CKV_AWS_18",
+        "CKV_AWS_21"
+      ],
+      "unrelated_findings_after": [
+        "CKV2_AWS_61",
+        "CKV2_AWS_62",
+        "CKV_AWS_144",
+        "CKV_AWS_145",
+        "CKV_AWS_18",
+        "CKV_AWS_21"
+      ]
+    },
+    {
+      "id": "SEED-03",
+      "resource": "aws_s3_bucket_versioning.seed03_no_versioning",
+      "category": "storage",
+      "flaw": "S3 versioning suspended",
+      "expected_checks": [
+        "CKV_AWS_21"
+      ],
+      "exact_hits": [],
+      "linked_hits": {
+        "aws_s3_bucket.seed03_no_versioning": [
+          "CKV_AWS_21"
+        ]
+      },
+      "detected_exact": false,
+      "detected_any": true,
+      "expected_fired": "1/1",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV2_AWS_6",
+        "CKV2_AWS_61",
+        "CKV2_AWS_62",
+        "CKV_AWS_144",
+        "CKV_AWS_145",
+        "CKV_AWS_18"
+      ],
+      "unrelated_findings_after": [
+        "CKV2_AWS_6",
+        "CKV2_AWS_61",
+        "CKV2_AWS_62",
+        "CKV_AWS_144",
+        "CKV_AWS_145",
+        "CKV_AWS_18"
+      ]
+    },
+    {
+      "id": "SEED-04",
+      "resource": "aws_db_instance.seed04_unencrypted_db",
+      "category": "storage",
+      "flaw": "RDS storage not encrypted",
+      "expected_checks": [
+        "CKV_AWS_16"
+      ],
+      "exact_hits": [
+        "CKV_AWS_16"
+      ],
+      "linked_hits": {},
+      "detected_exact": true,
+      "detected_any": true,
+      "expected_fired": "1/1",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV2_AWS_60",
+        "CKV_AWS_118",
+        "CKV_AWS_129",
+        "CKV_AWS_157",
+        "CKV_AWS_161",
+        "CKV_AWS_226",
+        "CKV_AWS_293"
+      ],
+      "unrelated_findings_after": [
+        "CKV2_AWS_60",
+        "CKV_AWS_118",
+        "CKV_AWS_129",
+        "CKV_AWS_157",
+        "CKV_AWS_161",
+        "CKV_AWS_226",
+        "CKV_AWS_293"
+      ]
+    },
+    {
+      "id": "SEED-05",
+      "resource": "aws_iam_policy.seed05_wildcard",
+      "category": "iam",
+      "flaw": "IAM policy allows * on *",
+      "expected_checks": [
+        "CKV_AWS_62",
+        "CKV_AWS_63",
+        "CKV_AWS_355"
+      ],
+      "exact_hits": [
+        "CKV_AWS_355",
+        "CKV_AWS_62",
+        "CKV_AWS_63"
+      ],
+      "linked_hits": {},
+      "detected_exact": true,
+      "detected_any": true,
+      "expected_fired": "3/3",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV2_AWS_40",
+        "CKV_AWS_286",
+        "CKV_AWS_287",
+        "CKV_AWS_288",
+        "CKV_AWS_289",
+        "CKV_AWS_290"
+      ],
+      "unrelated_findings_after": []
+    },
+    {
+      "id": "SEED-06",
+      "resource": "aws_iam_user_policy.seed06_user_inline",
+      "category": "iam",
+      "flaw": "Policy attached directly to a user",
+      "expected_checks": [
+        "CKV_AWS_40"
+      ],
+      "exact_hits": [
+        "CKV_AWS_40"
+      ],
+      "linked_hits": {},
+      "detected_exact": true,
+      "detected_any": true,
+      "expected_fired": "1/1",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV_AWS_273"
+      ],
+      "unrelated_findings_after": [
+        "CKV_AWS_273"
+      ]
+    },
+    {
+      "id": "SEED-07",
+      "resource": "aws_iam_account_password_policy.seed07_weak",
+      "category": "iam",
+      "flaw": "Password minimum length 6",
+      "expected_checks": [
+        "CKV_AWS_10"
+      ],
+      "exact_hits": [
+        "CKV_AWS_10"
+      ],
+      "linked_hits": {},
+      "detected_exact": true,
+      "detected_any": true,
+      "expected_fired": "1/1",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [],
+      "unrelated_findings_after": []
+    },
+    {
+      "id": "SEED-08",
+      "resource": "aws_security_group.seed08_ssh_open",
+      "category": "networking",
+      "flaw": "SSH open to 0.0.0.0/0",
+      "expected_checks": [
+        "CKV_AWS_24"
+      ],
+      "exact_hits": [
+        "CKV_AWS_24"
+      ],
+      "linked_hits": {},
+      "detected_exact": true,
+      "detected_any": true,
+      "expected_fired": "1/1",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV2_AWS_5"
+      ],
+      "unrelated_findings_after": [
+        "CKV2_AWS_5"
+      ]
+    },
+    {
+      "id": "SEED-09",
+      "resource": "aws_security_group.seed09_all_ports_open",
+      "category": "networking",
+      "flaw": "All ports open to 0.0.0.0/0",
+      "expected_checks": [
+        "CKV_AWS_277"
+      ],
+      "exact_hits": [
+        "CKV_AWS_277"
+      ],
+      "linked_hits": {},
+      "detected_exact": true,
+      "detected_any": true,
+      "expected_fired": "1/1",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV2_AWS_5",
+        "CKV_AWS_24",
+        "CKV_AWS_25",
+        "CKV_AWS_260"
+      ],
+      "unrelated_findings_after": [
+        "CKV2_AWS_5"
+      ]
+    },
+    {
+      "id": "SEED-10",
+      "resource": "aws_db_instance.seed10_public_db",
+      "category": "networking",
+      "flaw": "RDS publicly accessible",
+      "expected_checks": [
+        "CKV_AWS_17"
+      ],
+      "exact_hits": [
+        "CKV_AWS_17"
+      ],
+      "linked_hits": {},
+      "detected_exact": true,
+      "detected_any": true,
+      "expected_fired": "1/1",
+      "still_flagged_after": false,
+      "still_flagged_detail": {},
+      "unrelated_findings_before": [
+        "CKV2_AWS_60",
+        "CKV_AWS_118",
+        "CKV_AWS_129",
+        "CKV_AWS_157",
+        "CKV_AWS_161",
+        "CKV_AWS_226",
+        "CKV_AWS_293"
+      ],
+      "unrelated_findings_after": [
+        "CKV2_AWS_60",
+        "CKV_AWS_118",
+        "CKV_AWS_129",
+        "CKV_AWS_157",
+        "CKV_AWS_161",
+        "CKV_AWS_226",
+        "CKV_AWS_293"
+      ]
+    },
+    {
+      "id": "CONTROL-01",
+      "resource": "aws_s3_bucket.control01_secure",
+      "category": "storage",
+      "flaw": "Locked-down bucket (not a flaw)",
+      "control": true,
+      "failed_checks_before": {
+        "aws_s3_bucket.control01_secure": [
+          "CKV2_AWS_61",
+          "CKV2_AWS_62",
+          "CKV_AWS_144",
+          "CKV_AWS_145",
+          "CKV_AWS_18"
+        ]
+      },
+      "failed_checks_after": {
+        "aws_s3_bucket.control01_secure": [
+          "CKV2_AWS_61",
+          "CKV2_AWS_62",
+          "CKV_AWS_144",
+          "CKV_AWS_145",
+          "CKV_AWS_18"
+        ]
+      }
+    },
+    {
+      "id": "CONTROL-02",
+      "resource": "aws_security_group.control02_tight",
+      "category": "networking",
+      "flaw": "HTTPS from internal range only (not a flaw)",
+      "control": true,
+      "failed_checks_before": {
+        "aws_security_group.control02_tight": [
+          "CKV2_AWS_5"
+        ]
+      },
+      "failed_checks_after": {
+        "aws_security_group.control02_tight": [
+          "CKV2_AWS_5"
+        ]
+      }
+    }
+  ],
+  "custom_policy": {
+    "before": {
+      "failed": {
+        "aws_s3_bucket_acl.seed01_public_acl": [
+          "CKV_TMSE_1"
+        ],
+        "aws_s3_bucket_versioning.seed03_no_versioning": [
+          "CKV_TMSE_2"
+        ]
+      },
+      "passed": {
+        "aws_s3_bucket_versioning.control01_secure": [
+          "CKV_TMSE_2"
+        ]
+      }
+    },
+    "after": {
+      "failed": {},
+      "passed": {
+        "aws_s3_bucket_acl.seed01_public_acl": [
+          "CKV_TMSE_1"
+        ],
+        "aws_s3_bucket_versioning.seed03_no_versioning": [
+          "CKV_TMSE_2"
+        ],
+        "aws_s3_bucket_versioning.control01_secure": [
+          "CKV_TMSE_2"
+        ]
+      }
+    }
+  }
+}

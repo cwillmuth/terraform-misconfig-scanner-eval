@@ -1,0 +1,11 @@
+id,category,flaw,expected_checks,expected_fired,detected_exact,detected_any,reported_on,still_flagged_after,unrelated_findings_before
+SEED-01,storage,S3 ACL grants public read,CKV_AWS_20,1/1,False,True,aws_s3_bucket.seed01_public_acl,False,7
+SEED-02,storage,Public access block disabled,CKV_AWS_53;CKV_AWS_54;CKV_AWS_55;CKV_AWS_56,4/4,True,True,aws_s3_bucket_public_access_block.seed02_no_pab,False,7
+SEED-03,storage,S3 versioning suspended,CKV_AWS_21,1/1,False,True,aws_s3_bucket.seed03_no_versioning,False,6
+SEED-04,storage,RDS storage not encrypted,CKV_AWS_16,1/1,True,True,aws_db_instance.seed04_unencrypted_db,False,7
+SEED-05,iam,IAM policy allows * on *,CKV_AWS_62;CKV_AWS_63;CKV_AWS_355,3/3,True,True,aws_iam_policy.seed05_wildcard,False,6
+SEED-06,iam,Policy attached directly to a user,CKV_AWS_40,1/1,True,True,aws_iam_user_policy.seed06_user_inline,False,1
+SEED-07,iam,Password minimum length 6,CKV_AWS_10,1/1,True,True,aws_iam_account_password_policy.seed07_weak,False,0
+SEED-08,networking,SSH open to 0.0.0.0/0,CKV_AWS_24,1/1,True,True,aws_security_group.seed08_ssh_open,False,1
+SEED-09,networking,All ports open to 0.0.0.0/0,CKV_AWS_277,1/1,True,True,aws_security_group.seed09_all_ports_open,False,4
+SEED-10,networking,RDS publicly accessible,CKV_AWS_17,1/1,True,True,aws_db_instance.seed10_public_db,False,7

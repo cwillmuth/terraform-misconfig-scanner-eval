@@ -1,0 +1,265 @@
+{
+    "check_type": "terraform",
+    "results": {
+        "passed_checks": [
+            {
+                "check_id": "CKV_TMSE_2",
+                "bc_check_id": null,
+                "check_name": "Ensure the aws_s3_bucket_versioning resource has status Enabled",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_s3_bucket_versioning": {
+                            "control01_secure": {
+                                "__end_line__": 412,
+                                "__start_line__": 406,
+                                "bucket": [
+                                    "aws_s3_bucket.control01_secure.id"
+                                ],
+                                "versioning_configuration": [
+                                    {
+                                        "status": [
+                                            "Enabled"
+                                        ]
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket_versioning.control01_secure",
+                                "__provider_address__": "aws.default"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "versioning_configuration/status"
+                    ]
+                },
+                "code_block": [
+                    [
+                        406,
+                        "resource \"aws_s3_bucket_versioning\" \"control01_secure\" {\n"
+                    ],
+                    [
+                        407,
+                        "  bucket = aws_s3_bucket.control01_secure.id\n"
+                    ],
+                    [
+                        408,
+                        "\n"
+                    ],
+                    [
+                        409,
+                        "  versioning_configuration {\n"
+                    ],
+                    [
+                        410,
+                        "    status = \"Enabled\"\n"
+                    ],
+                    [
+                        411,
+                        "  }\n"
+                    ],
+                    [
+                        412,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/home/claude/proj/terraform-misconfig-scanner-eval/vulnerable/main.tf",
+                "repo_file_path": "/vulnerable/main.tf",
+                "file_line_range": [
+                    406,
+                    412
+                ],
+                "resource": "aws_s3_bucket_versioning.control01_secure",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": {},
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": null,
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/home/claude/proj/terraform-misconfig-scanner-eval/vulnerable/main.tf"
+            }
+        ],
+        "failed_checks": [
+            {
+                "check_id": "CKV_TMSE_1",
+                "bc_check_id": null,
+                "check_name": "Ensure the aws_s3_bucket_acl resource does not grant public or authenticated-user access",
+                "check_result": {
+                    "result": "FAILED",
+                    "entity": {
+                        "aws_s3_bucket_acl": {
+                            "seed01_public_acl": {
+                                "__end_line__": 85,
+                                "__start_line__": 82,
+                                "acl": [
+                                    "public-read"
+                                ],
+                                "bucket": [
+                                    "aws_s3_bucket.seed01_public_acl.id"
+                                ],
+                                "__address__": "aws_s3_bucket_acl.seed01_public_acl",
+                                "__provider_address__": "aws.default"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "acl"
+                    ]
+                },
+                "code_block": [
+                    [
+                        82,
+                        "resource \"aws_s3_bucket_acl\" \"seed01_public_acl\" {\n"
+                    ],
+                    [
+                        83,
+                        "  bucket = aws_s3_bucket.seed01_public_acl.id # links this ACL to the bucket above\n"
+                    ],
+                    [
+                        84,
+                        "  acl    = \"public-read\"                      # <-- FLAW: readable by everyone\n"
+                    ],
+                    [
+                        85,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/home/claude/proj/terraform-misconfig-scanner-eval/vulnerable/main.tf",
+                "repo_file_path": "/vulnerable/main.tf",
+                "file_line_range": [
+                    82,
+                    85
+                ],
+                "resource": "aws_s3_bucket_acl.seed01_public_acl",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": {},
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": null,
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/home/claude/proj/terraform-misconfig-scanner-eval/vulnerable/main.tf"
+            },
+            {
+                "check_id": "CKV_TMSE_2",
+                "bc_check_id": null,
+                "check_name": "Ensure the aws_s3_bucket_versioning resource has status Enabled",
+                "check_result": {
+                    "result": "FAILED",
+                    "entity": {
+                        "aws_s3_bucket_versioning": {
+                            "seed03_no_versioning": {
+                                "__end_line__": 141,
+                                "__start_line__": 135,
+                                "bucket": [
+                                    "aws_s3_bucket.seed03_no_versioning.id"
+                                ],
+                                "versioning_configuration": [
+                                    {
+                                        "status": [
+                                            "Suspended"
+                                        ]
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket_versioning.seed03_no_versioning",
+                                "__provider_address__": "aws.default"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "versioning_configuration/status"
+                    ]
+                },
+                "code_block": [
+                    [
+                        135,
+                        "resource \"aws_s3_bucket_versioning\" \"seed03_no_versioning\" {\n"
+                    ],
+                    [
+                        136,
+                        "  bucket = aws_s3_bucket.seed03_no_versioning.id\n"
+                    ],
+                    [
+                        137,
+                        "\n"
+                    ],
+                    [
+                        138,
+                        "  versioning_configuration {\n"
+                    ],
+                    [
+                        139,
+                        "    status = \"Suspended\" # <-- FLAW: \"Enabled\" is the secure value\n"
+                    ],
+                    [
+                        140,
+                        "  }\n"
+                    ],
+                    [
+                        141,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/home/claude/proj/terraform-misconfig-scanner-eval/vulnerable/main.tf",
+                "repo_file_path": "/vulnerable/main.tf",
+                "file_line_range": [
+                    135,
+                    141
+                ],
+                "resource": "aws_s3_bucket_versioning.seed03_no_versioning",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": {},
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": null,
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/home/claude/proj/terraform-misconfig-scanner-eval/vulnerable/main.tf"
+            }
+        ],
+        "skipped_checks": [],
+        "parsing_errors": []
+    },
+    "summary": {
+        "passed": 1,
+        "failed": 2,
+        "skipped": 0,
+        "parsing_errors": 0,
+        "resource_count": 19,
+        "checkov_version": "3.3.30"
+    },
+    "url": "Add an api key '--bc-api-key <api-key>' to see more detailed insights via https://bridgecrew.cloud"
+}
